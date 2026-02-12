@@ -14,7 +14,7 @@ app.use(cors());
 app.use(express.json());
 
 // Routes
-app.use('/api', messageRoutes);
+app.use('/api/v1', messageRoutes);
 
 // Basic Route
 app.get('/', (req: Request, res: Response) => {

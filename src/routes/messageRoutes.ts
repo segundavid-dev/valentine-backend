@@ -4,6 +4,6 @@ import { createMessage, getMessage } from '../controllers/messageController.js';
 const router = Router();
 
 router.post('/messages', createMessage);
-router.get('/messages/:shortId', getMessage);
+router.get('/messages/:id', getMessage);
 
 export default router;
