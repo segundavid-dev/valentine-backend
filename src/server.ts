@@ -1,8 +1,8 @@
-import express, { Application, Request, Response } from 'express';
+import express, { type Application, type Request, type Response } from 'express';
 import mongoose from 'mongoose';
 import dotenv from 'dotenv';
 import cors from 'cors';
-import messageRoutes from './routes/messageRoutes';
+import messageRoutes from './routes/messageRoutes.js';
 
 dotenv.config();
 

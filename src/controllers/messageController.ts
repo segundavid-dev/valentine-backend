@@ -1,6 +1,6 @@
-import { Request, Response } from 'express';
+import type { Request, Response } from 'express';
 import { nanoid } from 'nanoid';
-import Message from '../models/Message';
+import Message from '../models/Message.js';
 
 export const createMessage = async (req: Request, res: Response) => {
   try {
@@ -29,6 +29,9 @@ export const createMessage = async (req: Request, res: Response) => {
 export const getMessage = async (req: Request, res: Response) => {
   try {
     const { shortId } = req.params;
+    if (!shortId) {
+      return res.status(400).json({ message: 'Short ID is required' });
+    }
     const message = await Message.findOne({ shortId });
 
     if (!message) {
