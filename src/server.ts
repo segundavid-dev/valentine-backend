@@ -7,7 +7,7 @@ import messageRoutes from './routes/messageRoutes.js';
 dotenv.config();
 
 const app: Application = express();
-const PORT = process.env.PORT;
+const PORT = process.env.PORT || 8000;
 
 // Middleware
 app.use(cors());
@@ -21,17 +21,25 @@ app.get('/', (req: Request, res: Response) => {
   res.send('Valentine Project Backend is running');
 });
 
+app.listen(PORT, () => {
+  console.log(`Server is running on port ${PORT}`);
+});
+
 // Database Connection
 const MONGODB_URI = process.env.MONGODB_URI;
 
+if (!MONGODB_URI) {
+  console.error('MONGODB_URI is not defined in .env file');
+  process.exit(1);
+}
+
+console.log('Attempting to connect to MongoDB...');
+
 mongoose
-  .connect(MONGODB_URI!)
+  .connect(MONGODB_URI)
   .then(() => {
-    console.log('Connected to MongoDB');
-    app.listen(PORT, () => {
-      console.log(`Server is running on port ${PORT}`);
-    });
+    console.log(' Connected to MongoDB');
   })
   .catch((err) => {
-    console.error('Database connection error:', err);
+    console.error(err.message);
   });
