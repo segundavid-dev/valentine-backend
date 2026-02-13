@@ -15,7 +15,17 @@ const PORT = process.env.PORT || 8000;
 // Middleware
 app.use(helmet()); // Security headers
 app.use(morgan('dev')); // Logging
-app.use(cors());
+
+const allowedOrigins: string[] = [
+  'http://localhost:5173',
+  'http://localhost:3000',
+  'https://valentext.pxxl.click'
+];
+
+app.use(cors({
+  origin: allowedOrigins,
+  credentials: true
+}));
 app.use(express.json());
 
 // Rate Limiting
