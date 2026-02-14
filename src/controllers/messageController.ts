@@ -64,7 +64,12 @@ export const getMessage = async (req: Request, res: Response) => {
 
     // Decrypt content before sending back to client
     const messageData = message.toObject();
-    messageData.content = decrypt(messageData.content);
+    try {
+      messageData.content = decrypt(messageData.content);
+    } catch (e) {
+      console.log('Failed to decrypt message, returning as is', e);
+      // Fallback for unencrypted/legacy messages
+    }
 
     res.json(messageData);
   } catch (error: any) {
