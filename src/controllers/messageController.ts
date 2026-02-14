@@ -1,6 +1,7 @@
 import type { Request, Response } from 'express';
 import { nanoid } from 'nanoid';
 import Message from '../models/Message.js';
+import { encrypt, decrypt } from '../utils/encryption.js';
 
 export const createMessage = async (req: Request, res: Response) => {
   try {
@@ -18,20 +19,25 @@ export const createMessage = async (req: Request, res: Response) => {
     const shortId = nanoid(10);
     console.log('Generated shortId:', shortId);
 
-    // create new document message
+    // create new document message with ENCRYPTED content
     const newMessage = new Message({
       recipient,
       sender,
-      content,
+      content: encrypt(content),
       theme,
       shortId
     });
 
     console.log('Saving message to database...');
     // store document in database
-    await newMessage.save();
+    const savedMessage = await newMessage.save();
     console.log('Message saved successfully');
-    res.status(201).json(newMessage);
+    
+    // Return the message with UNENCRYPTED content so the frontend has the correct data
+    const responseMessage = savedMessage.toObject();
+    responseMessage.content = content;
+    
+    res.status(201).json(responseMessage);
   } catch (error: any) {
     console.error('Error creating message:', error);
     res.status(500).json({ 
@@ -56,7 +62,11 @@ export const getMessage = async (req: Request, res: Response) => {
       return res.status(404).json({ message: 'Message not found' });
     }
 
-    res.json(message);
+    // Decrypt content before sending back to client
+    const messageData = message.toObject();
+    messageData.content = decrypt(messageData.content);
+
+    res.json(messageData);
   } catch (error: any) {
     console.error('Error fetching message:', error);
     res.status(500).json({ 
