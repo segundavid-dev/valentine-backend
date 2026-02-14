@@ -10,6 +10,7 @@ import messageRoutes from './routes/messageRoutes.js';
 dotenv.config();
 
 const app: Application = express();
+app.set('trust proxy', 1); // Trust first proxy, required for correct IP detection behind load balancers/proxies
 const PORT = process.env.PORT || 8000;
 
 // Middleware
@@ -17,8 +18,6 @@ app.use(helmet()); // Security headers
 app.use(morgan('dev')); // Logging
 
 const allowedOrigins: string[] = [
-  'http://localhost:5173',
-  'http://localhost:3000',
   'https://valentext.pxxl.click'
 ];
 
